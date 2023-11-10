@@ -41,20 +41,22 @@ class _TutorialCoachWidgetState extends State<TutorialCoachWidget> {
     List<TargetFocus> targets,
   ) async {
     _tutorialWidget.value = null;
-    _tutorialWidget.value = TutorialCoachMarkWidget(
-      targets: targets,
-      key: _widgetKey,
-      paddingFocus: widget.controller.paddingFocus,
-      onClickSkip: _skip,
-      hideSkip: true,
-      colorShadow: widget.controller.colorShadow,
-      opacityShadow: widget.controller.opacityShadow,
-      pulseEnable: false,
-      finish: _finish,
-      imageFilter: widget.controller.imageFilter,
-      clickOverlay: (p0) {
-        widget.controller.onOverlayClick?.call();
-      },
+    Future.delayed(const Duration(milliseconds: 50)).then(
+      (value) => _tutorialWidget.value = TutorialCoachMarkWidget(
+        targets: targets,
+        key: _widgetKey,
+        paddingFocus: widget.controller.paddingFocus,
+        onClickSkip: _skip,
+        hideSkip: true,
+        colorShadow: widget.controller.colorShadow,
+        opacityShadow: widget.controller.opacityShadow,
+        pulseEnable: false,
+        finish: _finish,
+        imageFilter: widget.controller.imageFilter,
+        clickOverlay: (p0) {
+          widget.controller.onOverlayClick?.call();
+        },
+      ),
     );
   }
 
