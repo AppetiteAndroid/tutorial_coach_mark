@@ -41,7 +41,6 @@ class _TutorialCoachWidgetState extends State<TutorialCoachWidget> {
   void _show(
     List<TargetFocus> targets,
   ) async {
-    await _finish();
     _tutorialWidget = TutorialCoachMarkWidget(
       targets: targets,
       key: _widgetKey,
