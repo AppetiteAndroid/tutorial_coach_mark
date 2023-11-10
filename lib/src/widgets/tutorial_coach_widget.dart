@@ -32,6 +32,7 @@ class _TutorialCoachWidgetState extends State<TutorialCoachWidget> {
   }
 
   void _finish() {
+    if (_tutorialWidget == null) return;
     widget.controller.onFinish?.call();
     setState(() {
       _tutorialWidget = null;
@@ -41,6 +42,7 @@ class _TutorialCoachWidgetState extends State<TutorialCoachWidget> {
   void _show(
     List<TargetFocus> targets,
   ) {
+    _finish();
     _tutorialWidget = TutorialCoachMarkWidget(
       targets: targets,
       key: _widgetKey,
