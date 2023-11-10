@@ -33,10 +33,9 @@ class _TutorialCoachWidgetState extends State<TutorialCoachWidget> {
 
   void _finish() {
     if (_tutorialWidget == null) return;
+    _tutorialWidget = null;
     widget.controller.onFinish?.call();
-    setState(() {
-      _tutorialWidget = null;
-    });
+    setState(() {});
   }
 
   void _show(
