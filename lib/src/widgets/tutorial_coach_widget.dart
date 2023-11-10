@@ -20,7 +20,7 @@ class TutorialCoachWidget extends StatefulWidget {
 
 class _TutorialCoachWidgetState extends State<TutorialCoachWidget> {
   final GlobalKey<TutorialCoachMarkWidgetState> _widgetKey = GlobalKey();
-  Widget? _tutorialWidget;
+  ValueNotifier<Widget?> _tutorialWidget = ValueNotifier(null);
   @override
   void initState() {
     widget.controller.init(_show, _isShowing, _finish);
@@ -28,20 +28,19 @@ class _TutorialCoachWidgetState extends State<TutorialCoachWidget> {
   }
 
   bool _isShowing() {
-    return _tutorialWidget != null;
+    return _tutorialWidget.value != null;
   }
 
   Future<void> _finish() async {
-    if (_tutorialWidget == null) return;
-    _tutorialWidget = null;
+    if (_tutorialWidget.value == null) return;
+    _tutorialWidget.value = null;
     widget.controller.onFinish?.call();
-    setState(() {});
   }
 
   void _show(
     List<TargetFocus> targets,
   ) async {
-    _tutorialWidget = TutorialCoachMarkWidget(
+    _tutorialWidget.value = TutorialCoachMarkWidget(
       targets: targets,
       key: _widgetKey,
       paddingFocus: widget.controller.paddingFocus,
@@ -56,7 +55,6 @@ class _TutorialCoachWidgetState extends State<TutorialCoachWidget> {
         widget.controller.onOverlayClick?.call();
       },
     );
-    setState(() {});
   }
 
   void _next() => _widgetKey.currentState?.next();
@@ -85,7 +83,12 @@ class _TutorialCoachWidgetState extends State<TutorialCoachWidget> {
       child: Stack(
         children: [
           Positioned.fill(child: widget.child),
-          if (_tutorialWidget != null) Positioned.fill(child: _tutorialWidget!),
+          ValueListenableBuilder<Widget?>(
+            valueListenable: _tutorialWidget,
+            builder: (context, value, child) {
+              return value != null ? Positioned.fill(child: value) : const SizedBox();
+            },
+          )
         ],
       ),
     );
