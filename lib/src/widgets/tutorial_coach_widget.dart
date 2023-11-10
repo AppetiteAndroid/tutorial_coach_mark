@@ -23,16 +23,16 @@ class _TutorialCoachWidgetState extends State<TutorialCoachWidget> {
   Widget? _tutorialWidget;
   @override
   void initState() {
-    widget.controller.init(_show, isShowing);
+    widget.controller.init(_show, _isShowing, _finish);
     super.initState();
   }
 
-  bool isShowing() {
+  bool _isShowing() {
     return _tutorialWidget != null;
   }
 
-  void _finish() {
-    if (_tutorialWidget == null) return;
+  Future<void> _finish() async {
+    if (_tutorialWidget == null && mounted) return;
     _tutorialWidget = null;
     widget.controller.onFinish?.call();
     setState(() {});
@@ -40,8 +40,8 @@ class _TutorialCoachWidgetState extends State<TutorialCoachWidget> {
 
   void _show(
     List<TargetFocus> targets,
-  ) {
-    _finish();
+  ) async {
+    await _finish();
     _tutorialWidget = TutorialCoachMarkWidget(
       targets: targets,
       key: _widgetKey,
@@ -75,11 +75,20 @@ class _TutorialCoachWidgetState extends State<TutorialCoachWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Positioned.fill(child: widget.child),
-        if (_tutorialWidget != null) Positioned.fill(child: _tutorialWidget!),
-      ],
+    return WillPopScope(
+      onWillPop: () async {
+        if (_isShowing()) {
+          _finish();
+          return false;
+        }
+        return true;
+      },
+      child: Stack(
+        children: [
+          Positioned.fill(child: widget.child),
+          if (_tutorialWidget != null) Positioned.fill(child: _tutorialWidget!),
+        ],
+      ),
     );
   }
 }

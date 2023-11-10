@@ -16,6 +16,7 @@ class TutorialController {
   void Function()? _onSkip;
   void Function()? _onFinish;
   void Function()? _onOverlayClick;
+  void Function()? _finish;
 
   bool Function()? _isShowing;
 
@@ -29,14 +30,20 @@ class TutorialController {
   init(
     Function(List<TargetFocus> targets) showTargets,
     bool Function() isShowing,
+    Function() finish,
   ) {
     _showTargets = showTargets;
     _isShowing = isShowing;
+    _finish = finish;
   }
 
   show(List<TargetFocus> targets, {bool? isFinishOnSkip}) {
     this.isFinishOnSkip = isFinishOnSkip ?? this.isFinishOnSkip;
     _showTargets.call(targets);
+  }
+
+  finish() {
+    _finish?.call();
   }
 
   setPaddingFocus(double padding) {
