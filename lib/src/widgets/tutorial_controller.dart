@@ -59,8 +59,10 @@ class TutorialController {
     }
     if (foundIndex >= 0) {
       _nextTargets = targets.sublist(foundIndex + 1);
+      return targets.sublist(0, foundIndex + 1);
+    } else {
+      return targets;
     }
-    return targets.sublist(0, foundIndex + 1);
   }
 
   finish() {
