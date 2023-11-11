@@ -261,6 +261,7 @@ class MyHomePageState extends State<MyHomePage> {
         keyTarget: keyBottomNavigation1,
         alignSkip: Alignment.topRight,
         enableOverlayTab: true,
+        shouldStop: true,
         contents: [
           TargetContent(
             align: ContentAlign.top,

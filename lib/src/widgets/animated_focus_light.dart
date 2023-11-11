@@ -219,9 +219,9 @@ abstract class AnimatedFocusLightState extends State<AnimatedFocusLight> with Ti
               onPointerCancel: (event) => downEvent = null,
               onPointerMove: (event) => downEvent = null,
               onPointerUp: (event) {
-                print('Up');
+                debugPrint('Up');
                 var i = event.timeStamp.inMilliseconds - (downEvent?.timeStamp.inMilliseconds ?? event.timeStamp.inMilliseconds);
-                print(i);
+                debugPrint(i.toString());
                 if (i >= 20) {
                   if (_targetFocus.enableTargetTab) {
                     _tapHandler(targetTap: true);
