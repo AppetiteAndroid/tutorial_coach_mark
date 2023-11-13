@@ -79,17 +79,18 @@ class _TutorialCoachWidgetState extends State<TutorialCoachWidget> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        if (_tutorialWidget != null)
-          WillPopScope(
-            child: const SizedBox(),
-            onWillPop: () async {
-              if (_isShowing()) {
-                _finish();
-                return false;
-              }
-              return true;
-            },
-          ),
+        WillPopScope(
+          onWillPop: _tutorialWidget != null
+              ? () async {
+                  if (_isShowing()) {
+                    _finish();
+                    return false;
+                  }
+                  return true;
+                }
+              : null,
+          child: const SizedBox(),
+        ),
         Positioned.fill(child: widget.child),
         if (_tutorialWidget != null)
           Positioned.fill(
