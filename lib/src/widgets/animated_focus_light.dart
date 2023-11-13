@@ -196,16 +196,12 @@ abstract class AnimatedFocusLightState extends State<AnimatedFocusLight> with Ti
               clipper: _getClipper(targetFocus.shape),
               child: BackdropFilter(
                 filter: widget.imageFilter!,
-                child: Stack(
-                  children: [
-                    Positioned.fill(
-                      child: GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: _targetFocus.enableOverlayTab ? () => _tapHandler(overlayTap: true) : null,
-                        child: _getSizedPainter(targetFocus),
-                      ),
-                    ),
-                  ],
+                child: SizedBox.expand(
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: _targetFocus.enableOverlayTab ? () => _tapHandler(overlayTap: true) : null,
+                    child: _getSizedPainter(targetFocus),
+                  ),
                 ),
               ),
             ),
@@ -301,6 +297,7 @@ abstract class AnimatedFocusLightState extends State<AnimatedFocusLight> with Ti
 }
 
 class AnimatedStaticFocusLightState extends AnimatedFocusLightState {
+  bool _finishFocus = false;
   double get left => (_targetPosition?.offset.dx ?? 0) - _getPaddingFocus() * 2;
 
   double get top => (_targetPosition?.offset.dy ?? 0) - _getPaddingFocus() * 2;
@@ -321,6 +318,15 @@ class AnimatedStaticFocusLightState extends AnimatedFocusLightState {
         _progressAnimated = _curvedAnimation.value;
         return Stack(
           children: <Widget>[
+            if (!_finishFocus)
+              Positioned.fill(
+                child: InkWell(
+                  onTap: () {},
+                  child: Container(
+                    color: Colors.transparent,
+                  ),
+                ),
+              ),
             _getLightPaint(
               _targetFocus,
               left: left,
@@ -341,6 +347,7 @@ class AnimatedStaticFocusLightState extends AnimatedFocusLightState {
 
   @override
   void _listener(AnimationStatus status) {
+    _finishFocus = status == AnimationStatus.completed;
     if (status == AnimationStatus.completed) {
       widget.focus?.call(_targetFocus);
     }
