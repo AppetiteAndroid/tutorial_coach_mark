@@ -20,7 +20,7 @@ class TutorialCoachWidget extends StatefulWidget {
 
 class _TutorialCoachWidgetState extends State<TutorialCoachWidget> {
   final GlobalKey<TutorialCoachMarkWidgetState> _widgetKey = GlobalKey();
-  ValueNotifier<Widget?> _tutorialWidget = ValueNotifier(null);
+  Widget? _tutorialWidget;
   @override
   void initState() {
     widget.controller.init(_show, _isShowing, _finish);
@@ -28,35 +28,34 @@ class _TutorialCoachWidgetState extends State<TutorialCoachWidget> {
   }
 
   bool _isShowing() {
-    return _tutorialWidget.value != null;
+    return _tutorialWidget != null;
   }
 
   Future<void> _finish() async {
-    if (_tutorialWidget.value == null) return;
-    _tutorialWidget.value = null;
+    if (_tutorialWidget == null) return;
+    _tutorialWidget = null;
     widget.controller.onFinish?.call();
+    // setState(() {});
   }
 
   void _show(
     List<TargetFocus> targets,
   ) async {
-    _tutorialWidget.value = null;
-    Future.delayed(const Duration(milliseconds: 50)).then(
-      (value) => _tutorialWidget.value = TutorialCoachMarkWidget(
-        targets: targets,
-        key: _widgetKey,
-        paddingFocus: widget.controller.paddingFocus,
-        onClickSkip: _skip,
-        hideSkip: true,
-        colorShadow: widget.controller.colorShadow,
-        opacityShadow: widget.controller.opacityShadow,
-        pulseEnable: false,
-        finish: _finish,
-        imageFilter: widget.controller.imageFilter,
-        clickOverlay: (p0) {
-          widget.controller.onOverlayClick?.call();
-        },
-      ),
+    if (!mounted) return;
+    _tutorialWidget = TutorialCoachMarkWidget(
+      targets: targets,
+      key: _widgetKey,
+      paddingFocus: widget.controller.paddingFocus,
+      onClickSkip: _skip,
+      hideSkip: true,
+      colorShadow: widget.controller.colorShadow,
+      opacityShadow: widget.controller.opacityShadow,
+      pulseEnable: false,
+      finish: _finish,
+      imageFilter: widget.controller.imageFilter,
+      clickOverlay: (p0) {
+        widget.controller.onOverlayClick?.call();
+      },
     );
   }
 
@@ -75,25 +74,21 @@ class _TutorialCoachWidgetState extends State<TutorialCoachWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        if (_isShowing()) {
-          _finish();
-          return false;
-        }
-        return true;
-      },
-      child: Stack(
-        children: [
-          Positioned.fill(child: widget.child),
-          ValueListenableBuilder<Widget?>(
-            valueListenable: _tutorialWidget,
-            builder: (context, value, child) {
-              return value != null ? Positioned.fill(child: value) : const SizedBox();
+    return Stack(
+      children: [
+        Positioned.fill(child: widget.child),
+        if (_tutorialWidget != null)
+          WillPopScope(
+            child: Positioned.fill(child: _tutorialWidget!),
+            onWillPop: () async {
+              if (_isShowing()) {
+                _finish();
+                return false;
+              }
+              return true;
             },
           )
-        ],
-      ),
+      ],
     );
   }
 }
