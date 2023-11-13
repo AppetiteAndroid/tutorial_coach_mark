@@ -35,28 +35,31 @@ class _TutorialCoachWidgetState extends State<TutorialCoachWidget> {
     if (_tutorialWidget == null) return;
     _tutorialWidget = null;
     widget.controller.onFinish?.call();
-    // setState(() {});
+    setState(() {});
   }
 
   void _show(
     List<TargetFocus> targets,
   ) async {
     if (!mounted) return;
-    _tutorialWidget = TutorialCoachMarkWidget(
-      targets: targets,
-      key: _widgetKey,
-      paddingFocus: widget.controller.paddingFocus,
-      onClickSkip: _skip,
-      hideSkip: true,
-      colorShadow: widget.controller.colorShadow,
-      opacityShadow: widget.controller.opacityShadow,
-      pulseEnable: false,
-      finish: _finish,
-      imageFilter: widget.controller.imageFilter,
-      clickOverlay: (p0) {
-        widget.controller.onOverlayClick?.call();
-      },
-    );
+    Future.delayed(const Duration(milliseconds: 150)).then((value) {
+      _tutorialWidget = TutorialCoachMarkWidget(
+        targets: targets,
+        key: _widgetKey,
+        paddingFocus: widget.controller.paddingFocus,
+        onClickSkip: _skip,
+        hideSkip: true,
+        colorShadow: widget.controller.colorShadow,
+        opacityShadow: widget.controller.opacityShadow,
+        pulseEnable: false,
+        finish: _finish,
+        imageFilter: widget.controller.imageFilter,
+        clickOverlay: (p0) {
+          widget.controller.onOverlayClick?.call();
+        },
+      );
+      setState(() {});
+    });
   }
 
   void _next() => _widgetKey.currentState?.next();
@@ -76,7 +79,6 @@ class _TutorialCoachWidgetState extends State<TutorialCoachWidget> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Positioned.fill(child: widget.child),
         if (_tutorialWidget != null)
           WillPopScope(
             child: Positioned.fill(child: _tutorialWidget!),
@@ -87,7 +89,8 @@ class _TutorialCoachWidgetState extends State<TutorialCoachWidget> {
               }
               return true;
             },
-          )
+          ),
+        Positioned.fill(child: widget.child),
       ],
     );
   }
