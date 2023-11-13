@@ -11,6 +11,7 @@ class TutorialController {
   bool isFinishOnSkip = false;
   ImageFilter? imageFilter = ImageFilter.blur(sigmaX: 8, sigmaY: 8);
   List<TargetFocus> _nextTargets = [];
+  List<TargetFocus> _lastTargets = [];
   void Function(List<TargetFocus> targets)? _showTargets;
 
   void Function()? _onSkip;
@@ -38,6 +39,7 @@ class TutorialController {
   }
 
   show(List<TargetFocus> targets, {bool? isFinishOnSkip}) {
+    _lastTargets = targets;
     this.isFinishOnSkip = isFinishOnSkip ?? this.isFinishOnSkip;
     _showTargets?.call(_getTargets(targets));
   }
@@ -45,6 +47,10 @@ class TutorialController {
   continueTutorial() {
     if (_nextTargets.isEmpty) return;
     show(_nextTargets);
+  }
+
+  reShow() {
+    _showTargets?.call(_getTargets(_lastTargets));
   }
 
   List<TargetFocus> _getTargets(List<TargetFocus> targets) {

@@ -21,7 +21,7 @@ class TutorialCoachWidget extends StatefulWidget {
 class _TutorialCoachWidgetState extends State<TutorialCoachWidget> {
   final GlobalKey<TutorialCoachMarkWidgetState> _widgetKey = GlobalKey();
   Widget? _tutorialWidget;
-  final bool _dontFinish = false;
+  bool _shouldReShow = false;
   @override
   void initState() {
     widget.controller.init(_show, _isShowing, _finish);
@@ -46,6 +46,10 @@ class _TutorialCoachWidgetState extends State<TutorialCoachWidget> {
     _tutorialWidget = null;
     widget.controller.onFinish?.call();
     setState(() {});
+    if (_shouldReShow) {
+      widget.controller.reShow();
+      _shouldReShow = false;
+    }
   }
 
   void _show(
@@ -53,23 +57,26 @@ class _TutorialCoachWidgetState extends State<TutorialCoachWidget> {
   ) async {
     if (!mounted) return;
     Future.delayed(const Duration(milliseconds: 150)).then((value) async {
-      await _finish();
-      _tutorialWidget = TutorialCoachMarkWidget(
-        targets: targets,
-        key: _widgetKey,
-        paddingFocus: widget.controller.paddingFocus,
-        onClickSkip: _skip,
-        hideSkip: true,
-        colorShadow: widget.controller.colorShadow,
-        opacityShadow: widget.controller.opacityShadow,
-        pulseEnable: false,
-        finish: _finish,
-        imageFilter: widget.controller.imageFilter,
-        clickOverlay: (p0) {
-          widget.controller.onOverlayClick?.call();
-        },
-      );
-      setState(() {});
+      if (_tutorialWidget != null) {
+        _shouldReShow = true;
+      } else {
+        _tutorialWidget = TutorialCoachMarkWidget(
+          targets: targets,
+          key: _widgetKey,
+          paddingFocus: widget.controller.paddingFocus,
+          onClickSkip: _skip,
+          hideSkip: true,
+          colorShadow: widget.controller.colorShadow,
+          opacityShadow: widget.controller.opacityShadow,
+          pulseEnable: false,
+          finish: _finish,
+          imageFilter: widget.controller.imageFilter,
+          clickOverlay: (p0) {
+            widget.controller.onOverlayClick?.call();
+          },
+        );
+        setState(() {});
+      }
     });
   }
 
