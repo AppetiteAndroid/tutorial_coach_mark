@@ -21,6 +21,7 @@ class TutorialCoachWidget extends StatefulWidget {
 class _TutorialCoachWidgetState extends State<TutorialCoachWidget> {
   final GlobalKey<TutorialCoachMarkWidgetState> _widgetKey = GlobalKey();
   Widget? _tutorialWidget;
+  bool _dontFinish = false;
   @override
   void initState() {
     widget.controller.init(_show, _isShowing, _finish);
@@ -41,7 +42,7 @@ class _TutorialCoachWidgetState extends State<TutorialCoachWidget> {
   }
 
   Future<void> _finish() async {
-    if (_tutorialWidget == null) return;
+    if (_tutorialWidget == null || _dontFinish) return;
     _tutorialWidget = null;
     widget.controller.onFinish?.call();
     setState(() {});
@@ -50,6 +51,7 @@ class _TutorialCoachWidgetState extends State<TutorialCoachWidget> {
   void _show(
     List<TargetFocus> targets,
   ) async {
+    _dontFinish = true;
     if (!mounted) return;
     Future.delayed(const Duration(milliseconds: 150)).then((value) {
       _tutorialWidget = TutorialCoachMarkWidget(
@@ -67,6 +69,7 @@ class _TutorialCoachWidgetState extends State<TutorialCoachWidget> {
           widget.controller.onOverlayClick?.call();
         },
       );
+      _dontFinish = false;
       setState(() {});
     });
   }
