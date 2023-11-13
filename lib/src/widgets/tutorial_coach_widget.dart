@@ -42,10 +42,12 @@ class _TutorialCoachWidgetState extends State<TutorialCoachWidget> {
   }
 
   Future<void> _finish() async {
-    if (_tutorialWidget == null || _dontFinish) return;
+    if (_tutorialWidget == null) return;
     _tutorialWidget = null;
     widget.controller.onFinish?.call();
-    setState(() {});
+    if (!_dontFinish) {
+      setState(() {});
+    }
   }
 
   void _show(
