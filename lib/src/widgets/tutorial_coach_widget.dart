@@ -81,7 +81,7 @@ class _TutorialCoachWidgetState extends State<TutorialCoachWidget> {
       children: [
         if (_tutorialWidget != null)
           WillPopScope(
-            child: Positioned.fill(child: _tutorialWidget!),
+            child: const SizedBox(),
             onWillPop: () async {
               if (_isShowing()) {
                 _finish();
@@ -91,6 +91,10 @@ class _TutorialCoachWidgetState extends State<TutorialCoachWidget> {
             },
           ),
         Positioned.fill(child: widget.child),
+        if (_tutorialWidget != null)
+          Positioned.fill(
+            child: _tutorialWidget!,
+          ),
       ],
     );
   }
