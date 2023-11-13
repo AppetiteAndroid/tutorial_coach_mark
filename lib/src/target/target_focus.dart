@@ -1,4 +1,6 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/widgets.dart';
+
 import 'package:tutorial_coach_mark/src/target/target_content.dart';
 import 'package:tutorial_coach_mark/src/target/target_position.dart';
 import 'package:tutorial_coach_mark/src/util.dart';
@@ -12,9 +14,10 @@ class TargetFocus {
     this.shape,
     this.radius,
     this.borderSide,
-    this.color,
     this.enableOverlayTab = false,
     this.enableTargetTab = true,
+    this.shouldStop = false,
+    this.color,
     this.alignSkip,
     this.paddingFocus,
     this.focusAnimationDuration,
@@ -31,6 +34,7 @@ class TargetFocus {
   final BorderSide? borderSide;
   final bool enableOverlayTab;
   final bool enableTargetTab;
+  final bool shouldStop;
   final Color? color;
   final AlignmentGeometry? alignSkip;
   final double? paddingFocus;
