@@ -1,5 +1,5 @@
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/material.dart';
-
 import 'tutorial_coach_mark_widget.dart';
 import 'package:tutorial_coach_mark/src/target/target_focus.dart';
 
@@ -24,11 +24,20 @@ class _TutorialCoachWidgetState extends State<TutorialCoachWidget> {
   @override
   void initState() {
     widget.controller.init(_show, _isShowing, _finish);
+    BackButtonInterceptor.add(myInterceptor);
     super.initState();
   }
 
   bool _isShowing() {
     return _tutorialWidget != null;
+  }
+
+  bool myInterceptor(bool stopDefaultButtonEvent, RouteInfo info) {
+    if (_isShowing()) {
+      _finish();
+      return true;
+    }
+    return false;
   }
 
   Future<void> _finish() async {
@@ -79,19 +88,9 @@ class _TutorialCoachWidgetState extends State<TutorialCoachWidget> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        WillPopScope(
-          onWillPop: _tutorialWidget != null
-              ? () async {
-                  if (_isShowing()) {
-                    _finish();
-                    return false;
-                  }
-                  return true;
-                }
-              : null,
-          child: const SizedBox(),
+        Positioned.fill(
+          child: widget.child,
         ),
-        Positioned.fill(child: widget.child),
         if (_tutorialWidget != null)
           Positioned.fill(
             child: _tutorialWidget!,
