@@ -56,6 +56,7 @@ class _TutorialCoachWidgetState extends State<TutorialCoachWidget> {
     List<TargetFocus> targets,
   ) async {
     if (!mounted) return;
+    FocusManager.instance.primaryFocus?.unfocus();
     Future.delayed(const Duration(milliseconds: 150)).then((value) async {
       if (_tutorialWidget != null) {
         _shouldReShow = true;
